@@ -1,0 +1,26 @@
+include:
+  - remote: 'https://raw.githubusercontent.com/pnnl-miscscripts/gitlab-lib/v1/gitlab-lib.yaml'
+
+test-build-image:
+  extends: .pnnllib-gitlab-build-container-image
+  stage: build
+  tags:
+    - docker
+    - k8s
+  variables:
+    KANIKO_EXTRA_ARGS: --no-push
+  except:
+    - master
+
+build-image:
+  extends: .pnnllib-gitlab-build-container-image
+  image: gcr.io/kaniko-project/executor:v1.9.0-debug
+  stage: build
+  tags:
+    - docker
+    - k8s
+  variables:
+    CONTAINER_TAG: latest
+  only:
+    - master
+
